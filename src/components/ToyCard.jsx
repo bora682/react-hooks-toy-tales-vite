@@ -1,17 +1,14 @@
 import React from "react";
 
-function ToyCard() {
+function ToyCard({ toy, onLike, onDonate }) {
   return (
     <div className="card" data-testid="toy-card">
-      <h2>{"" /* Toy's Name */}</h2>
-      <img
-        src={"" /* Toy's Image */}
-        alt={"" /* Toy's Name */}
-        className="toy-avatar"
-      />
-      <p>{"" /* Toy's Likes */} Likes </p>
-      <button className="like-btn">Like {"<3"}</button>
-      <button className="del-btn">Donate to GoodWill</button>
+      <h2>{toy.name}</h2>
+      <img src={toy.image} alt={toy.name} className="toy-avatar" />
+      {/* NOTE: trailing space after "Likes" is required by tests */}
+      <p>{(toy.likes ?? toy.Likes ?? 0)} Likes </p>
+      <button className="like-btn" onClick={onLike}>Like {"<3"}</button>
+      <button className="del-btn" onClick={onDonate}>Donate to GoodWill</button>
     </div>
   );
 }

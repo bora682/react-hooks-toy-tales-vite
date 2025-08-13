@@ -1,44 +1,75 @@
-# Practice Challenge: Toy Tales
+# Toy Tales
 
-You've got a friend in need! Again!
+React + JSON Server CRUD app. All tests pass with Vitest + Testing Library.
 
-Andy has misplaced of his toys (again) and need your help to organize them.
+## What it does
+- Display toys on load (GET `/toys`)
+- Add a toy (POST `/toys`)
+- Like a toy (PATCH `/toys/:id`)
+- Donate a toy (DELETE `/toys/:id`)
 
-## Setup
+## Run
+```bash
+npm install
+npm run server   # http://localhost:3001/toys
+npm run dev      # http://localhost:5173
+npm run test
 
-All the information about Andy's toys can be found in the `db.json` file. We'll
-be using `json-server` to create a RESTful API for our database.
+## Screenshots
+![Display](./docs/1-display-toys.png)
+![Add](./docs/2-add-toy.png)
+![Like/Donate](./docs/3-like-donate.png)
+![Terminal tests](./docs/4-tests.png)
 
-Run `npm install` to install our dependencies.
 
-Then, run `npm run server` to start up `json-server` on `http://localhost:3001`.
+API
+GET    /toys
+POST   /toys           { name, image, likes }
+PATCH  /toys/:id       { likes }
+DELETE /toys/:id
 
-In another tab, run `npm run dev` to start up our React app at `http://localhost:3000`.
+Implementation Notes
 
-In another tab, run `npm run test` to run the test suite.
+App mounts → GET /toys → setToys(data)
 
-Before you start building out the application, the first step that you should
-take is to examint the current code and component hierarchy. This will tell you 
-how components can pass data to each other as well as where that information should 
-be stored.
+Add → form submit → POST /toys { name, image, likes: 0 } → append to state
 
-## Deliverables
+Like → click “Like <3” → PATCH /toys/:id { likes } → map replace (keeps order)
 
-- _When our application loads_, make a GET request to `/toys` to fetch the toy
-  array. Given your component tree, think about which component should be
-  responsible for the array. After you have put the data in the proper
-  component, your next job is to render the `ToyCard` components on the page.
+Donate → click “Donate to GoodWill” → DELETE /toys/:id → filter remove
 
-- _When the `ToyForm` is submitted_, make a POST request to `/toys` to save a
-  new toy to the server. Using the ideas of controlled form and inverse data
-  flow, think about how to render a new `ToyCard` for the toy that you created.
+Project Structure
 
-- _When the `Donate to Goodwill` button is clicked_, make a DELETE request to
-  `/toys/:id` with the ID of the toy that was clicked to delete the toy from the
-  server. The `ToyCard` that you clicked on should also be removed from the DOM.
+src/
+  components/
+    App.jsx           # state, effects, handlers (GET/POST/PATCH/DELETE)
+    ToyForm.jsx       # controlled inputs, calls onAddToy
+    ToyContainer.jsx  # maps toys -> ToyCard, wires handlers
+    ToyCard.jsx       # name, image, "<likes> Likes ", buttons
+  __tests__/
+    AllToys.test.jsx
+    Like.test.jsx
+    Donate.test.jsx
+    ToyForm.test.jsx
+db.json               # JSON Server data
 
-- _When the like button is clicked_, make a PATCH request to `/toys/:id` with
-  the id of the toy that was clicked, along with the new number of likes (this
-  should be sent in the body of the PATCH request, as a object:
-  `{ likes: 10 }`), to update the toy on the server. Clicking on the button
-  should also increase the number of likes on the DOM.
+Testing Tips
+Run a single file while developing:
+npm test -- src/__tests__/AllToys.test.jsx
+npm test -- src/__tests__/Like.test.jsx
+npm test -- src/__tests__/Donate.test.jsx
+npm test -- src/__tests__/ToyForm.test.jsx
+
+
+## After you take screenshots
+```bash
+mkdir -p docs
+# save images as:
+# docs/1-display-toys.png
+# docs/2-add-toy.png
+# docs/3-like-donate.png
+# docs/4-tests.png   # optional
+
+git add docs/*.png README.md
+git commit -m "Add screenshots to README"
+git push
